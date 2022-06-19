@@ -37,8 +37,7 @@ void PrefixSpan::firstScan() {
 		already_found_seq = 0x0;
 		for (int j = 0; j < database[i].size(); j++) { //for each char in given database row
 			if (database[i][j] != ',') {
-				//seq_candidate = CHECK_BIT(wanted_seq_ap[0], database[i][j] - 97);
-				seq_candidate = 1 << (database[i][j] - 97); //THIS?
+				seq_candidate = 1 << (database[i][j] - 97); 
 				seq_candidate = already_found_seq | seq_candidate;
 				if (seq_candidate != already_found_seq) {
 					seq_val[0][database[i][j] - 97]++;
@@ -210,7 +209,6 @@ void PrefixSpan::buildFirstDatabases() {
 void PrefixSpan::buildDatabases() {
 	unsigned int already_found_seq = 0x0;
 	unsigned int seq_candidate;
-	//int sub_database_size = 0; //NOT NEEDED?
 	int prepared_databases = 0;
 	int assemblage_offset = 0;
 	bool comma_found = false;

@@ -9,6 +9,7 @@
 
 #include "PrefixSpan.h"
 
+//function for tracking time of given operations
 void trackTime(int operation_type) {
 	static std::chrono::time_point<std::chrono::steady_clock> start;
 	static std::chrono::time_point<std::chrono::steady_clock> stop;
@@ -71,11 +72,11 @@ int main(int argc, char** argv)
     auto start = std::chrono::high_resolution_clock::now();
 
 	//enum for measuring exec time of different parts of program
-	enum TimeMeasure
+	/*enum TimeMeasure
 	{
 		disk_to_RAM, scan_db, trim_vector, build_database, build_vector, RAM_to_disk, write_results, init
 	};
-	trackTime(TimeMeasure::init);
+	trackTime(TimeMeasure::init);*/
 
     //check argv
     if (argc != 4) {
@@ -89,7 +90,6 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    //const int unique_itemcount = 26; //NO MORE THAN 31
     std::ifstream file(argv[1]);
     //std::ofstream output(argv[2]);
 
@@ -106,41 +106,38 @@ int main(int argc, char** argv)
         }
         file.close();
 
-		trackTime(TimeMeasure::disk_to_RAM);
+		//trackTime(TimeMeasure::disk_to_RAM);
 
         const int min_sup = ceil(database.size() * float_min_sup); //minimum support expressed as number of rows in database
         
         PrefixSpan sp(database, argv[2]);
 
         sp.firstScan();
-		trackTime(TimeMeasure::scan_db);
+		//trackTime(TimeMeasure::scan_db);
         sp.trimVector2(min_sup);
-		trackTime(TimeMeasure::trim_vector);
+		//trackTime(TimeMeasure::trim_vector);
         sp.printVector2();
-		trackTime(TimeMeasure::RAM_to_disk);
+		//trackTime(TimeMeasure::RAM_to_disk);
         sp.buildFirstDatabases();
-		trackTime(TimeMeasure::build_database);
-        //auto start1 = std::chrono::high_resolution_clock::now();
+		//trackTime(TimeMeasure::build_database);
         sp.buildFirstVector();
-		trackTime(TimeMeasure::build_vector);
-        //auto stop1 = std::chrono::high_resolution_clock::now();
-        //auto duration1 = std::chrono::duration_cast<std::chrono::microseconds>(stop1 - start1);
-        //std::cout << "Time taken by function: " << duration1.count() << " microseconds\n";
+		//trackTime(TimeMeasure::build_vector);
+        
 
         while (sp.isEmpty() == false) {
             sp.scanDatabase();
-			trackTime(TimeMeasure::scan_db);
+			//trackTime(TimeMeasure::scan_db);
             sp.trimVector2(min_sup);
-			trackTime(TimeMeasure::trim_vector);
+			//trackTime(TimeMeasure::trim_vector);
             sp.printVector2();
-			trackTime(TimeMeasure::RAM_to_disk);
+			//trackTime(TimeMeasure::RAM_to_disk);
             sp.buildDatabases();
-			trackTime(TimeMeasure::build_database);
+			//trackTime(TimeMeasure::build_database);
             sp.buildVector();
-			trackTime(TimeMeasure::build_vector);
+			//trackTime(TimeMeasure::build_vector);
         }
 
-		trackTime(TimeMeasure::write_results);
+		//trackTime(TimeMeasure::write_results);
         auto stop = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
         std::cout << "Time taken by function: " << duration.count() << " microseconds\n";
